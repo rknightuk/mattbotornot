@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+	
+		<title>Matt Bot or Not?</title>
+		
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+
+		<link href='http://fonts.googleapis.com/css?family=Cabin:500,300' rel='stylesheet' type='text/css'>
+
+		<style type="text/css">
+			body {
+				padding: 5px;
+				max-width: 800px;
+				margin: 0 auto;
+				font-family: 'Cabin', sans-serif;
+				text-align: center;
+			}
+
+			h1, h2, h3 { text-align: center; }
+			h1 { font-size: 50px; margin-bottom: 0; }
+			h2 { margin-top: 10px; color: #7bc299; }
+
+			#matt-tweet { font-size: 25px; color: #6c7a89; margin: 40px 0; }
+			#answer-block { display: none; }
+			#message { font-size: 20px; }
+
+			button {
+			    background: #3a99d9;
+			    color: #fff;
+			    font-family: Sans-serif;
+			    font-size: 20px;
+			    height: 60px;
+			    width: 150px;
+			    line-height: 60px;
+			    margin: 25px 25px;
+			    text-align: center;
+			    border: 0;
+			    transition: all 0.3s ease 0s;
+			    cursor: pointer;
+			}
+
+			button:hover { background: #2e81b7; }
+			button:disabled { background: #c0c0c0; cursor: default; }
+
+			.success #message { color: #7bc299; }
+			.error #message { color: #e54d42; }
+		</style>
+		
+		<!--[if lt IE 9]>
+			<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<!-- <link rel="shortcut icon" href="img/favicon.ico"> -->
+		
+	</head>
+	
+	<body onload="showTweet()">
+
+	<h1>Matt Bot or Not?</h1>
+
+	<h2>Your score: <span id="score">0</span></h2>
+
+	<h3>
+		<a 
+			id="tweet-my-score"
+			href="https://twitter.com/intent/tweet?text=Is%20is%20Matt%20or%20a%20Bot%3F%20Try%20your%20luck%20at%20%23mattbotornot%20http%3A%2F%2Fcode.robblewis.me%2Fmattbotornot"
+			target="_blank" 
+		>Tweet #mattbotornot</a>
+	</h3>
+
+	<p id="matt-tweet" data-bot=""></p>
+
+	<div class="botOrNot">
+		<button onclick="botOrNot(1)" id="button-bot">Bot</button>
+		<button onclick="botOrNot(0)" id="button-not">Not</button>
+	</div>
+
+	<div id="answer-block" class="">
+		<p><button onclick="showTweet()">Another</button></p>
+
+		<p id="message"></p>
+		<a id="tweet-permalink" href="" target="_blank">View tweet</a>
+	</div>
+
+	<p><a href="https://github.com/rmlewisuk/mattbotornot">Fork on Github</a> &bullet; Made by <a href="http://robblewis.me">Robb Lewis</a></p>
+
+	<script src="tweets.js"></script>
+    <script type="text/javascript">
+
+    	var score = 0;
+
+		var showTweet = function() {
+			document.getElementById('answer-block').style.display = 'none';
+			document.getElementById('button-bot').disabled = false;
+			document.getElementById('button-not').disabled = false;
+
+			var tweet = tweets[Math.floor(Math.random()*tweets.length)];
+
+			document.getElementById('matt-tweet').innerHTML = tweet.text;
+			document.getElementById('matt-tweet').setAttribute('data-bot', tweet.bot ? 1 : 0);
+			document.getElementById('tweet-permalink').setAttribute('href', tweet.permalink);
+		}
+
+		var botOrNot = function(answer) {
+			var bot = document.getElementById('matt-tweet').getAttribute('data-bot');
+			if (answer == bot) {
+				showAnswer(true);
+			}
+			else {
+				showAnswer(false);
+			}
+		}
+
+		var showAnswer = function(correct) {
+			var correctMsgs = [
+				'You are correct in the best possible way.',
+				'Excellent. Use coupon code CORRECT for 10% off a fisherman hat. Email Matt.',
+				'Well done, you passed the test.',
+				'Tear away your trousers in victory.'
+			];
+			var incorrectMsgs = [
+				'You are wrong. So sorry.',
+				'Wrong. You are a complete embarrassment.',
+				'How wrong you are is a metaphor for life.',
+				'You\'re wrong and you should feel bad.'
+			];
+
+			document.getElementById('button-bot').disabled = true;
+			document.getElementById('button-not').disabled = true;
+			document.getElementById('answer-block').style.display = 'block';
+			document.getElementById('answer-block').className = '';
+
+			if (correct) {
+				updateScore();
+				document.getElementById('answer-block').className = 'success';
+				document.getElementById('message').innerHTML = correctMsgs[Math.floor(Math.random()*correctMsgs.length)];
+			}
+			else {
+				document.getElementById('answer-block').className = 'error';
+				document.getElementById('message').innerHTML = incorrectMsgs[Math.floor(Math.random()*incorrectMsgs.length)];;
+			}
+		}
+
+		var updateScore = function() {
+			score += 1;
+			document.getElementById('score').innerHTML = score;
+			updateTweetUrl();
+		}
+
+		var updateTweetUrl = function() {
+			var baseUrl = 'https://twitter.com/intent/tweet';
+			var params = '?text=' + encodeURIComponent('I scored ' + score + ' in #mattbotornot http://code.robblewis.me/mattbotornot');
+			var url = baseUrl + params;
+
+			document.getElementById('tweet-my-score').setAttribute('href', url);
+			document.getElementById('tweet-my-score').innerHTML = 'Tweet my score';
+		}
+
+	</script>
+
+	</body>
+	
+</html>
