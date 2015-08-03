@@ -60,7 +60,7 @@
 
 	<h1>Matt Bot or Not?</h1>
 
-	<h2>Your score: <span id="score">0</span></h2>
+	<h2>Your score: <span id="score">0</span> / <span id="total">0</span></h2>
 
 	<h3>
 		<a 
@@ -90,6 +90,7 @@
     <script type="text/javascript">
 
     	var score = 0;
+    	var total = 0;
 
 		var showTweet = function() {
 			document.getElementById('answer-block').style.display = 'none';
@@ -132,6 +133,9 @@
 			document.getElementById('answer-block').style.display = 'block';
 			document.getElementById('answer-block').className = '';
 
+			total += 1;
+			document.getElementById('total').innerHTML = total;
+
 			if (correct) {
 				updateScore();
 				document.getElementById('answer-block').className = 'success';
@@ -141,17 +145,18 @@
 				document.getElementById('answer-block').className = 'error';
 				document.getElementById('message').innerHTML = incorrectMsgs[Math.floor(Math.random()*incorrectMsgs.length)];;
 			}
+
+			updateTweetUrl();
 		}
 
 		var updateScore = function() {
 			score += 1;
 			document.getElementById('score').innerHTML = score;
-			updateTweetUrl();
 		}
 
 		var updateTweetUrl = function() {
 			var baseUrl = 'https://twitter.com/intent/tweet';
-			var params = '?text=' + encodeURIComponent('I scored ' + score + ' in #mattbotornot http://code.robblewis.me/mattbotornot');
+			var params = '?text=' + encodeURIComponent('I scored ' + score + ' out of ' + total + ' in #mattbotornot http://code.robblewis.me/mattbotornot');
 			var url = baseUrl + params;
 
 			document.getElementById('tweet-my-score').setAttribute('href', url);
